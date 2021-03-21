@@ -1,0 +1,262 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Pipes</title>
+<link rel="stylesheet" href="bgipc.css" type="text/css">
+</head>
+
+<body bgcolor="#ffffff">
+<table width="100%" border="0" cellspacing="0"cellpadding="0" class="navtable">
+<tr>
+<td align="left"><a href="signals.html">&lt;&lt;&nbsp;Prev</a></td>
+<td align="center"><a href="index.html">Beej's Guide to Unix IPC</a></td><td align="right"><a href="fifos.html">Next&nbsp;&gt;&gt;</a></td>
+</tr></table>
+
+
+<h2 class="sect1title">4. <a name="pipes">Pipes</a></h2><hr class="mainsecthr"/>
+
+
+<p>There is no form of IPC that is simpler than pipes.  Implemented on
+every flavor of Unix, <b><tt class="func">pipe()</tt></b> and <b><tt class="func"><a href="fork.html">fork()</a></tt></b> make up the functionality behind the
+"<b class="com">|</b>" in <nobr>"<b class="com">ls | more</b>".</nobr>  They are
+marginally useful for cool things, but are a good way to learn about
+basic methods of IPC.</p>
+
+<p>Since they're so very very easy, I shant spent much time on them.
+We'll just have some examples and stuff.</p>
+
+
+
+<h3 class="sect2title">4.1. <a name="pipesclean">"These pipes are clean!"</a></h3>
+
+
+<p>Wait!  Not so fast.  I might need to define a "file descriptor" at
+this point.  Let me put it this way: you know about "<nobr><tt class="type">FILE*</tt></nobr>"
+from <i><tt class="var">stdio.h</tt></i>, right?  You know how you have all those nice
+functions like <b><tt class="func">fopen()</tt></b>, <b><tt class="func">fclose()</tt></b>,
+<b><tt class="func">fwrite()</tt></b>, and so on?  Well, those  are actually high level
+functions that are implemented using <i>file descriptors</i>, which
+use system calls such as <b><tt class="func">open()</tt></b>, <b><tt class="func">creat()</tt></b>,
+<b><tt class="func">close()</tt></b>, and <b><tt class="func">write()</tt></b>.  File descriptors are
+simply <nobr><tt class="type">ints</tt></nobr> that are analogous to <nobr><tt class="type">FILE*</tt></nobr>'s in
+<i><tt class="var">stdio.h</tt></i>.</p>
+
+<p>For example, <i><tt class="var">stdin</tt></i> is file descriptor "0",
+<i><tt class="var">stdout</tt></i> is "1", and <i><tt class="var">stderr</tt></i> is "2".  Likewise, any
+files you open using <b><tt class="func">fopen()</tt></b> get their own file descriptor,
+although this detail is hidden from you.  (This file descriptor can be
+retrived from the <nobr><tt class="type">FILE*</tt></nobr> by using the <b><tt class="func">fileno()</tt></b>
+macro from <i><tt class="var">stdio.h</tt></i>.)</p>
+
+<center>
+<div><img src="pipe1-96-4.149.png" alt="[pipe diagram 1]"/></div>
+
+<p><b>How a pipe is organized.</b></p>
+</center>
+
+
+<p>Basically, a call to the <b><tt class="func">pipe()</tt></b> function returns a pair
+of file descriptors.  One of these descriptors is connected to the write
+end of the pipe, and the other is connected to the read end.  Anything
+can be written to the pipe, and read from the other end in the order it
+came in.  On many systems, pipes will fill up after you write about 10K
+to them without reading anything out.</p>
+
+<p>As a <a href="http://beej.us/guide/bgipc/examples/pipe1.c">useless example</a>, the
+following program creates, writes to, and reads from a pipe.</p>
+
+<pre class="code">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;unistd.h&gt;
+
+int main(void)
+{
+    int pfds[2];
+    char buf[30];
+
+    if (pipe(pfds) == -1) {
+        perror("pipe");
+        exit(1);
+    }
+
+    printf("writing to file descriptor #%d\n", pfds[1]);
+    write(pfds[1], "test", 5);
+    printf("reading from file descriptor #%d\n", pfds[0]);
+    read(pfds[0], buf, 5);
+    printf("read \"%s\"\n", buf);
+
+    return 0;
+}</pre>
+
+
+<p>As you can see, <b><tt class="func">pipe()</tt></b> takes an array of two
+<nobr><tt class="type">int</tt></nobr>s as an argument.  Assuming no errors, it connects two
+file descriptors and returns them in the array.  The first element of
+the array is the reading-end of the pipe, the second is the writing
+end.</p>
+
+
+
+
+
+
+<h3 class="sect2title">4.2. <a name="pipefork"><b><tt class="titlefunc">fork()</tt></b> and <b><tt class="titlefunc">pipe()</tt></b>—you have the
+power!</a></h3>
+
+
+<p>From the above example, it's pretty hard to see how these would even
+be useful.  Well, since this is an IPC document, let's put a
+<b><tt class="func">fork()</tt></b> in the mix and see what happens.  Pretend that you
+are a top federal agent assigned to get a child process to send the word
+"test" to the parent.  Not very glamorous, but no one ever said computer
+science would be the X-Files, Mulder.</p>
+
+<p>First, we'll have the parent make a pipe.  Secondly, we'll
+<b><tt class="func">fork()</tt></b>.  Now, the <b><tt class="func">fork()</tt></b> man page tells us
+that the child will receive a copy of all the parent's file descriptors,
+and this includes a copy of the pipe's file descriptors.
+<i>Alors</i>, the child will be able to send stuff to the
+write-end of the pipe, and the parent will get it off the read-end.
+<a href="http://beej.us/guide/bgipc/examples/pipe2.c">Like this</a>:</p>
+
+<pre class="code">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+
+int main(void)
+{
+    int pfds[2];
+    char buf[30];
+
+    pipe(pfds);
+
+    if (!fork()) {
+        printf(" CHILD: writing to the pipe\n");
+        write(pfds[1], "test", 5);
+        printf(" CHILD: exiting\n");
+        exit(0);
+    } else {
+        printf("PARENT: reading from pipe\n");
+        read(pfds[0], buf, 5);
+        printf("PARENT: read \"%s\"\n", buf);
+        wait(NULL);
+    }
+
+    return 0;
+}</pre>
+
+
+<p>Please note, your programs should have a lot more error checking than
+mine do.  I leave it out on occasion to help keep things clear.</p>
+
+<p>Anyway, this example is just like the previous one, except now we
+<b><tt class="func">fork()</tt></b> of a new process and have it write to the pipe,
+while the parent reads from it.  The resultant output will be something
+similar to the following:</p>
+
+<pre class="screen">PARENT: reading from pipe
+ CHILD: writing to the pipe
+ CHILD: exiting
+PARENT: read "test"</pre>
+
+
+<p>In this case, the parent tried to read from the pipe before the child
+writes to it.  When this happens, the parent is said to
+<i>block</i>, or sleep, until data arrives to be read.  It seems
+that the parent tried to read, went to sleep, the child wrote and
+exited, and the parent woke up and read the data.</p>
+
+<p>Hurrah!!  You've just don't some interprocess communication!  That
+was dreadfully simple, huh?  I'll bet you are still thinking that there
+aren't many uses for <b><tt class="func">pipe()</tt></b> and, well, you're probably
+right.  The other forms of IPC are generally more useful and are often
+more exotic.</p>
+
+
+
+
+
+<h3 class="sect2title">4.3. <a name="pipequest">The search for Pipe as we know it</a></h3>
+
+
+<p>In an effort to make you think that pipes are actually reasonable
+beasts, I'll give you an example of using <b><tt class="func">pipe()</tt></b> in a more
+familiar situation.  The challenge: implement "<nobr><b class="com">ls | wc
+-l</b></nobr>" in C.</p>
+
+<p>This requires usage of a couple more functions you may never have
+heard of: <b><tt class="func">exec()</tt></b> and <b><tt class="func">dup()</tt></b>.  The
+<b><tt class="func">exec()</tt></b> family of functions replaces the currently running
+process with whichever one is passed to <b><tt class="func">exec()</tt></b>.  This is
+the function that we will use to run <b class="com">ls</b> and <nobr><b class="com">wc
+-l</b></nobr>.  <b><tt class="func">dup()</tt></b> takes an open file descriptor and
+makes a clone (a duplicate) of it.  This is how we will connect the
+standard output of the <b class="com">ls</b> to the standard input of
+<b class="com">wc</b>.  See, stdout of <b class="com">ls</b> flows into the pipe, and
+the stdin of <b class="com">wc</b> flows in from the pipe.  The pipe fits right
+there in the middle!</p>
+
+<p>Anyway, <a href="http://beej.us/guide/bgipc/examples/pipe3.c">here is the code</a>:</p>
+
+<pre class="code">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+
+int main(void)
+{
+    int pfds[2];
+
+    pipe(pfds);
+
+    if (!fork()) {
+        close(1);       /* close normal stdout */
+        dup(pfds[1]);   /* make stdout same as pfds[1] */
+        close(pfds[0]); /* we don't need this */
+        execlp("ls", "ls", NULL);
+    } else {
+        close(0);       /* close normal stdin */
+        dup(pfds[0]);   /* make stdin same as pfds[0] */
+        close(pfds[1]); /* we don't need this */
+        execlp("wc", "wc", "-l", NULL);
+    }
+
+    return 0;
+}</pre>
+
+
+<p>I'm going to make another note about the
+<b><tt class="func">close()</tt></b>/<b><tt class="func">dup()</tt></b> combination since it's pretty
+weird.  <b><tt class="func">close(1)</tt></b> frees up file descriptor 1 (standard
+output).  <b><tt class="func">dup(pfds[1])</tt></b> makes a copy of the write-end of the
+pipe in the first available file descriptor, which is "1", since we just
+closed that.  In this way, anything that <b class="com">ls</b> writes to
+standard output (file descriptor 1) will instead go to
+<i><tt class="var">pfds[1]</tt></i> (the write end of the pipe).  The <b class="com">wc</b>
+section of code works the same way, except in reverse.</p>
+
+
+
+
+
+<h3 class="sect2title">4.4. <a name="pipesum">Summary</a></h3>
+
+
+<p>There aren't many of these for such a simple topic.  In fact, there
+are nearly just about none.  Probably the best use for pipes is the one
+you're most accustomed to: sending the standard output of one command to
+the standard input of another.  For other uses, it's pretty limiting and
+there are often other IPC techniques that work better.</p>
+
+
+
+<table width="100%" border="0" cellspacing="0"cellpadding="0" class="navtable">
+<tr>
+<td align="left"><a href="signals.html">&lt;&lt;&nbsp;Prev</a></td>
+<td align="center"><a href="index.html">Beej's Guide to Unix IPC</a></td><td align="right"><a href="fifos.html">Next&nbsp;&gt;&gt;</a></td>
+</tr></table>
+
+</body>
+</html>

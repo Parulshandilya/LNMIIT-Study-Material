@@ -1,0 +1,21 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><title>LSST v1.05r3 &gt; Chapter 2 &gt; How to print or access value of UDV (User defined variables)</title>
+
+<!--Google Top Ad BEGIN-->
+<script type="text/javascript"><!--
+google_ad_client = "pub-9961351994700795";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_color_border = "A8DDA0";
+google_color_bg = "EBFFED";
+google_color_link = "0000CC";
+google_color_url = "008000";
+google_color_text = "6F6F6F";
+//--></script>
+<script type="text/javascript" src="ch02sec05_files/show_ads.js">
+</script>
+
+<!--Google Top Ad END-->
+
+ </head><body><table align="center" border="0" cellpadding="0" cellspacing="0" width="99%"><tbody><tr><td colspan="3"> <div align="center"><b>Linux Shell Scripting Tutorial (LSST) v1.05r3</b></div></td></tr><tr><td width="8%"> <div align="left"><a href="http://www.freeos.com/guides/lsst/ch02sec04.html">Prev</a></div></td><td width="86%"> <div align="center">Chapter 2: Getting started with Shell Programming </div></td><td width="6%"> <div align="right"><a href="http://www.freeos.com/guides/lsst/ch02sec06.html">Next</a></div></td></tr><tr><td colspan="3"> <hr align="center"></td></tr> </tbody></table><h1>How to print or access value of UDV (User defined variables)</h1><p>To print or access UDV use following syntax<br> <i>Syntax: </i><br> $variablename</p><p>Define variable vech and n as follows:<br><code>$ vech=Bus<br> $ n=10</code><br> To print contains of variable 'vech' type<br><code>$ echo $vech</code><br> It will print 'Bus',To print contains of variable 'n' type command as follows<br><code>$ echo $n</code></p><p><b><font color="#ff0000"><a name="erronotagin"></a>Caution:</font></b> Do not try<b> $ echo vech</b>, as it will print vech instead its value 'Bus' and <b>$ echo n</b>, as it will print n instead its value '10', You must <i>use $ followed by variable name</i>.</p><p><b>Exercise </b><br> Q.1.How to Define variable x with value 10 and print it on screen.<br> Q.2.How to Define variable xn with value Rani and print it on screen<br> Q.3.How to print sum of two numbers, let's say 6 and 3?<br> Q.4.How to define two variable x=20, y=5 and then to print division of x and y (i.e. x/y)<br> Q.5.Modify above and store division of x and y to variable called z<br> Q.6.Point out error if any in following script</p> <table border="0" cellpadding="1" cellspacing="1" width="100%"><tbody><tr><td bgcolor="#cccccc" height="21"><code>$ vi variscript<br> #<br> #<br> # Script to test MY knowledge about variables!<br> #<br> myname=Vivek<br> myos = TroubleOS<br> myno=5<br> echo "My name is $myname"<br> echo "My os is $myos"<br> echo "My number is myno, can you see this number"</code></td></tr> </tbody></table><p><a href="http://www.freeos.com/guides/lsst/misc.htm#variexceans">For Answers Click here</a><br></p> <table align="center" border="0" cellpadding="0" cellspacing="0" width="99%"><tbody><tr><td colspan="3" height="20"> <hr></td></tr><tr><td width="42%"> <div align="left"><a href="http://www.freeos.com/guides/lsst/ch02sec04.html">Prev</a></div></td><td width="17%"> <div align="center"><a href="http://www.freeos.com/guides/lsst/index.html">Home</a></div></td><td width="41%"> <div align="right"><a href="http://www.freeos.com/guides/lsst/ch02sec06.html">Next</a></div></td></tr><tr><td width="42%">Rules for Naming variable name (Both UDV and System Variable)</td><td width="17%"> <div align="center"><a href="http://www.freeos.com/guides/lsst/ch02.html">Up</a></div></td><td width="41%"> <div align="right">echo Command</div></td></tr> </tbody></table></body></html>

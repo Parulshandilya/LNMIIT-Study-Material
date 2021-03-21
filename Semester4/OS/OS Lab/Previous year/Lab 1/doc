@@ -1,0 +1,13 @@
+int shmget(key_t key, size_t size, int flag)
+shmat-process can link its own memory with shared memory space
+void *shmat(int id, cast void *shmadd, int flag)
+
+int id;
+id = shmget(IPC_PRIVATE, 4, IPC_CREAT/0666);
+
+int *ptr;
+ptr = (int*)shmat(id,0,0);
+
+size-byte space 0666-r/w permission to user, owner and others
+
+

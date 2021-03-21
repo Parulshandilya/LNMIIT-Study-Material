@@ -1,0 +1,600 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Semaphores</title>
+<link rel="stylesheet" href="bgipc.css" type="text/css">
+</head>
+
+<body bgcolor="#ffffff">
+<table width="100%" border="0" cellspacing="0"cellpadding="0" class="navtable">
+<tr>
+<td align="left"><a href="mq.html">&lt;&lt;&nbsp;Prev</a></td>
+<td align="center"><a href="index.html">Beej's Guide to Unix IPC</a></td><td align="right"><a href="shm.html">Next&nbsp;&gt;&gt;</a></td>
+</tr></table>
+
+
+<h2 class="sect1title">8. <a name="semaphores">Semaphores</a></h2><hr class="mainsecthr"/>
+
+
+<p>Remember <a href="flocking.html">file locking</a>?  Well, semaphores
+can be thought of as really generic advisory locking mechanisms.  You
+can use them to control access to files, <a href="shm.html">shared
+memory</a>, and, well, just about anything you want.  The basic
+functionality of a semaphore is that you can either set it, check it, or
+wait until it clears then set it ("test-n-set").  No matter how complex
+the stuff that follows gets, remember those three operations.</p>
+
+<p>This document will provide an overview of semaphore functionality,
+and will end with a program that uses semaphores to control access to a
+file.  (This task, admittedly, could easily be handled with file
+locking, but it makes a good example since it's easier to wrap your head
+around than, say, shared memory.)</p>
+
+
+
+
+
+
+
+<h3 class="sect2title">8.1. <a name="semgrab">Grabbing some semaphores</a></h3>
+
+
+<p>With System V IPC, you don't grab single semaphores; you grab
+<i>sets</i> of semaphores.  You can, of course, grab a semaphore set
+that only has one semaphore in it, but the point is you can have a whole
+slew of semaphores just by creating a single semaphore set.</p>
+
+<p>How do you create the semaphore set?  It's done with a call to
+<b><tt class="func">semget()</tt></b>, which returns the semaphore id (hereafter referred to
+as the <i><tt class="var">semid</tt></i>):</p>
+
+<pre class="code">#include &lt;sys/sem.h&gt;
+
+int semget(key_t <i><tt class="var em1">key</tt></i>, int <i><tt class="var em1">nsems</tt></i>, int <i><tt class="var em1">semflg</tt></i>);</pre>
+
+
+<p>What's the <i><tt class="var">key</tt></i>?  It's a unique identifier that is used
+by different processes to identify this semaphore set.  (This
+<i><tt class="var">key</tt></i> will be generated using <b><tt class="func">ftok()</tt></b>,
+described in the <a href="mq.html#mqftok">Message Queues section</a>.)</p>
+
+<p>The next argument, <i><tt class="var">nsems</tt></i>, is (you guessed it!) the
+number of semaphores in this semaphore set.  The exact number is system
+dependent, but it's probably between 500 and 2000.  If you're needing
+more (greedy wretch!), just get another semaphore set.</p>
+
+<p>Finally, there's the <i><tt class="var">semflg</tt></i> argument.  This tells
+<b><tt class="func">semget()</tt></b> what the permissions should be on the new semaphore
+set, whether you're creating a new set or just want to connect to an
+existing one, and other things that you can look up.  For creating a new
+set, you can bit-wise or the access permissions with
+<tt class="const">IPC_CREAT</tt>.</p>
+
+<p>Here's an example call that generates the <i><tt class="var">key</tt></i> with
+<b><tt class="func">ftok()</tt></b> and creates a 10 semaphore set, with 666
+(<tt class="tt">rw-rw-rw-</tt>) permissions:</p>
+
+<pre class="code">#include &lt;sys/ipc.h&gt;
+#include &lt;sys/sem.h&gt;
+
+key_t key;
+int semid;
+
+key = ftok("/home/beej/somefile", 'E');
+semid = semget(key, 10, 0666 | IPC_CREAT);</pre>
+
+
+<p>Congrats!  You've created a new semaphore set!  After running the
+program you can check it out with the <b class="com">ipcs</b> command.  (Don't
+forget to remove it when you're done with it with <b class="com">ipcrm</b>!)</p>
+
+<p>Wait!  Warning!  <i>¡Advertencia! ¡No pongas las manos en la
+tolva!</i>  (That's the only Spanish I learned while working at
+Pizza Hut in 1990.  It was printed on the dough roller.)  Look here:</p>
+
+<p>When you first create some semaphores, they're all uninitialized; it
+takes another call to mark them as free (namely to <b><tt class="func">semop()</tt></b>
+or <b><tt class="func">semctl()</tt></b>—see the following sections.) What does
+this mean?  Well, it means that creation of a semaphore is not
+<i>atomic</i> (in other words, it's not a one-step process).  If two
+processes are trying to create, initialize, and use a semaphore at the
+same time, a race condition might develop.</p>
+
+<p>One way to get around this difficulty is by having a single init
+process that creates and initializes the semaphore long before the
+main processes begin to run.  The main processes just access it, but
+never create nor destroy it.</p>
+
+<p>Stevens refers to this problem as the semaphore's "fatal flaw".  He
+solves it by creating the semaphore set with the <tt class="const">IPC_EXCL</tt>
+flag.  If process 1 creates it first, process 2 will return an error on
+the call (with <i><tt class="var">errno</tt></i> set to <tt class="const">EEXIST</tt>.)  At that
+point, process 2 will have to wait until the semaphore is initialized by
+process 1.  How can it tell?  Turns out, it can repeatedly call
+<b><tt class="func">semctl()</tt></b> with the <tt class="const">IPC_STAT</tt> flag, and look at
+the <i><tt class="var">sem_otime</tt></i> member of the returned <nobr><tt class="type">struct
+semid_ds</tt></nobr> structure.  If that's non-zero, it means process 1 has
+performed an operation on the semaphore with <b><tt class="func">semop()</tt></b>,
+presumably to initialize it.</p>
+
+<p>For an example of this, see the demonstration program <a href="semaphores.html#semsamp"><i><tt class="var">semdemo.c</tt></i></a>, below, in which I
+generally reimplement <a href="http://www.kohala.com/start/unpv22e/unpv22e.html">Stevens' code</a>.</p>
+
+<p>In the meantime, let's hop to the next section and take a look at how
+to initialize our freshly-minted semaphores.</p>
+
+
+
+
+
+
+
+
+
+<h3 class="sect2title">8.2. <a name="semctl">Controlling your semaphores with <b><tt class="titlefunc">semctl()</tt></b></a></h3>
+
+
+<p>Once you have created your semaphore sets, you have to initialize
+them to a positive value to show that the resource is available to use.
+The function <b><tt class="func">semctl()</tt></b> allows you to do atomic value changes
+to individual semaphores or complete sets of semaphores.</p>
+
+<pre class="code">int semctl(int <i><tt class="var em1">semid</tt></i>, int <i><tt class="var em1">semnum</tt></i>,
+           int <i><tt class="var em1">cmd</tt></i>, ... /*<i><tt class="var em1">arg</tt></i>*/);</pre>
+
+
+<p><i><tt class="var">semid</tt></i> is the semaphore set id that you get from your
+call to <b><tt class="func">semget()</tt></b>, earlier.  <i><tt class="var">semnum</tt></i> is the ID
+of the semaphore that you wish to manipulate the value of. 
+<i><tt class="var">cmd</tt></i> is what you wish to do with the semaphore in
+question.  The last "argument", "<i><tt class="var">arg</tt></i>", if required, needs
+to be a <nobr><tt class="type">union semun</tt></nobr>, which will be defined by you in your
+code to be one of these:</p>
+
+<pre class="code">union semun {
+    int val;               /* used for SETVAL only */
+    struct semid_ds *buf;  /* used for IPC_STAT and IPC_SET */
+    ushort *array;         /* used for GETALL and SETALL */
+};</pre>
+
+
+<p>The various fields in the <nobr><tt class="type">union semun</tt></nobr> are used depending
+on the value of the <i><tt class="var">cmd</tt></i> parameter to
+<b><tt class="func">setctl()</tt></b> (a partial list follows—see your local man
+page for more):</p>
+
+<center><table cellpadding="10" cellspacing="0" border="0" class="joetable">
+
+<tr><td valign="top" align="left" width="20%%"><i><tt class="var"><b><u>cmd</u></b></tt></i></td>
+
+<td valign="top" align="left" width="80%%"><b><u>Effect</u></b></td>
+</tr>
+
+
+<tr><td valign="top" align="left"><tt class="const">SETVAL</tt></td>
+
+<td valign="top" align="left">Set the value of the specified semaphore to the value in the
+<i><tt class="var">val</tt></i> member of the passed-in <nobr><tt class="type">union
+semun</tt></nobr>.</td>
+</tr>
+
+
+<tr><td valign="top" align="left"><tt class="const">GETVAL</tt></td>
+
+<td valign="top" align="left">Return the value of the given semaphore.</td>
+</tr>
+
+
+<tr><td valign="top" align="left"><tt class="const">SETALL</tt></td>
+
+<td valign="top" align="left">Set the values of all the semaphores in the set to the values in the
+array pointed to by the <i><tt class="var">array</tt></i> member of the passed-in
+<nobr><tt class="type">union semun</tt></nobr>.  The <i><tt class="var">semnum</tt></i> parameter to
+<b><tt class="func">semctl()</tt></b> isn't used.</td>
+</tr>
+
+
+<tr><td valign="top" align="left"><tt class="const">GETALL</tt></td>
+
+<td valign="top" align="left">Gets the values of all the semaphores in the set and stores them in
+the array pointed to by the <i><tt class="var">array</tt></i> member of the passed-in
+<nobr><tt class="type">union semun</tt></nobr>.  The <i><tt class="var">semnum</tt></i> parameter to
+<b><tt class="func">semctl()</tt></b> isn't used.</td>
+</tr>
+
+
+<tr><td valign="top" align="left"><tt class="const">IPC_RMID</tt></td>
+
+<td valign="top" align="left">Remove the specified semaphore set from the system.  The
+<i><tt class="var">semnum</tt></i> parameter is ignored.</td>
+</tr>
+
+
+<tr><td valign="top" align="left"><tt class="const">IPC_STAT</tt></td>
+
+<td valign="top" align="left">Load status information about the semaphore set into the
+<nobr><tt class="type">struct semid_ds</tt></nobr> structure pointed to by the <i><tt class="var">buf</tt></i>
+member of the <nobr><tt class="type">union semun</tt></nobr>.</td>
+</tr>
+
+
+</table></center>
+
+
+<p>For the curious, here are the contents of the <nobr><tt class="type">struct
+semid_ds</tt></nobr> that is used in the <nobr><tt class="type">union semun</tt></nobr>:</p>
+
+<pre class="code">struct semid_ds {
+    struct ipc_perm sem_perm;  /* Ownership and permissions
+    time_t          sem_otime; /* Last semop time */
+    time_t          sem_ctime; /* Last change time */
+    unsigned short  sem_nsems; /* No. of semaphores in set */
+};</pre>
+
+
+<p>We'll use that <i><tt class="var">sem_otime</tt></i> member later on when we write our
+<b><tt class="func">initsem()</tt></b> in the sample code, below.</p>
+
+
+
+
+
+
+
+
+
+<h3 class="sect2title">8.3. <a name="semop"><tt class="tt">semop()</tt>: Atomic power!</a></h3>
+
+
+<p>All operations that set, get, or test-n-set a semaphore use the
+<b><tt class="func">semop()</tt></b> system call.  This system call is general purpose,
+and its functionality is dictated by a structure that is passed to it,
+<nobr><nobr><tt class="type">struct sembuf</tt></nobr></nobr>:</p>
+
+<pre class="code">/* Warning!  Members might not be in this order! */
+
+struct sembuf {
+    ushort sem_num;
+    short sem_op;
+    short sem_flg;
+};</pre>
+
+
+<p>Of course, <i><tt class="var">sem_num</tt></i> is the number of the semaphore in the
+set that you want to manipulate.  Then, <i><tt class="var">sem_op</tt></i> is what you
+want to do with that semaphore.  This takes on different meanings,
+depending on whether <i><tt class="var">sem_op</tt></i> is positive, negative, or zero,
+as shown in the following table:</p>
+
+<center><table cellpadding="10" cellspacing="0" border="0" class="joetable">
+
+<tr><td valign="top" align="left" width="15%%"><b><u><i><tt class="var">sem_op</tt></i></u></b></td>
+
+<td valign="top" align="left" width="85%%"><b><u>What happens</u></b></td>
+</tr>
+
+
+<tr><td valign="top" align="left">Negative</td>
+
+<td valign="top" align="left">Allocate resources.  Block the calling process until the value of
+the semaphore is greater than or equal to the absolute value of
+<i><tt class="var">sem_op</tt></i>.  (That is, wait until enough resources have been
+freed by other processes for this one to allocate.)  Then add
+(effectively subtract, since it's negative) the value of
+<i><tt class="var">sem_op</tt></i> to the semaphore's value.</td>
+</tr>
+
+
+<tr><td valign="top" align="left">Positive</td>
+
+<td valign="top" align="left">Release resources.  The value of <i><tt class="var">sem_op</tt></i> is added to
+the semaphore's value.</td>
+</tr>
+
+
+<tr><td valign="top" align="left">Zero</td>
+
+<td valign="top" align="left">This process will wait until the semaphore in question reaches
+0.</td>
+</tr>
+
+
+</table></center>
+
+
+
+<p>So, basically, what you do is load up a <nobr><nobr><tt class="type">struct
+sembuf</tt></nobr></nobr> with whatever values you want, then call
+<b><tt class="func">semop()</tt></b>, like this:</p>
+
+<pre class="code">int semop(int <i><tt class="var em1">semid</tt></i>, struct sembuf *<i><tt class="var em1">sops</tt></i>,
+          unsigned int <i><tt class="var em1">nsops</tt></i>);</pre>
+
+
+<p>The <i><tt class="var">semid</tt></i> argument is the number obtained from the
+call to <b><tt class="func">semget()</tt></b>.  Next is <i><tt class="var">sops</tt></i>, which is a
+pointer to the <nobr><nobr><tt class="type">struct sembuf</tt></nobr></nobr> that you filled
+with your semaphore commands.  If you want, though, you can make an
+array of <nobr><nobr><tt class="type">struct sembuf</tt></nobr></nobr>s in order to do a whole
+bunch of semaphore operations at the same time.  The way
+<b><tt class="func">semop()</tt></b> knows that you're doing this is the
+<i><tt class="var">nsop</tt></i> argument, which tells how many <nobr><nobr><tt class="type">struct
+sembuf</tt></nobr></nobr>s you're sending it.  If you only have one, well,
+put <tt class="const">1</tt> as this argument.</p>
+
+<p>One field in the <nobr><nobr><tt class="type">struct sembuf</tt></nobr></nobr> that I
+haven't mentioned is the <i><tt class="var">sem_flg</tt></i> field which allows the
+program to specify flags the further modify the effects of the
+<b><tt class="func">semop()</tt></b> call.</p>
+
+<p>One of these flags is <tt class="const">IPC_NOWAIT</tt> which, as the name
+suggests, causes the call to <b><tt class="func">semop()</tt></b> to return with error
+<tt class="const">EAGAIN</tt> if it encounters a situation where it would
+normally block.  This is good for situations where you might want to
+"poll" to see if you can allocate a resource.</p>
+
+<p>Another very useful flag is the <tt class="const">SEM_UNDO</tt> flag.  This
+causes <b><tt class="func">semop()</tt></b> to record, in a way, the change made to the
+semaphore.  When the program exits, the kernel will automatically undo
+all changes that were marked with the <tt class="const">SEM_UNDO</tt> flag.  Of
+course, your program should do its best to deallocate any resources it
+marks using the semaphore, but sometimes this isn't possible when your
+program gets a <tt class="const">SIGKILL</tt> or some other awful crash
+happens.</p>
+
+
+
+
+
+
+
+
+
+<h3 class="sect2title">8.4. <a name="semdest">Destroying a semaphore</a></h3>
+
+
+<p>There are two ways to get rid of a semaphore: one is to use the Unix
+command <b class="com">ipcrm</b>.  The other is through a call to
+<b><tt class="func">semctl()</tt></b> with the <i><tt class="var">cmd</tt></i> set to
+<tt class="const">IPC_RMID</tt>.</p>
+
+<p>Basically, you want to call <b><tt class="func">semctl()</tt></b> and set
+<i><tt class="var">semid</tt></i> to the semaphore ID you want to axe.  The
+<i><tt class="var">cmd</tt></i> should be set to <tt class="const">IPC_RMID</tt>, which tells
+<b><tt class="func">semctl()</tt></b> to remove this semaphore set.  The parameter
+<i><tt class="var">semnum</tt></i> has no meaning in the <tt class="const">IPC_RMID</tt>
+context and can just be set to zero.</p>
+
+<p>Here's an example call to torch a semaphore set:</p>
+
+<pre class="code">int semid; 
+.
+.
+semid = semget(...);
+.
+.
+semctl(semid, 0, IPC_RMID);</pre>
+
+
+<p>Easy peasy.</p>
+
+
+
+
+
+
+
+
+
+<h3 class="sect2title">8.5. <a name="semsamp">Sample programs</a></h3>
+
+
+<p>There are two of them.  The first, <i><tt class="var">semdemo.c</tt></i>, creates
+the semaphore if necessary, and performs some pretend file locking on it
+in a demo very much like that in the <a href="flocking.html">File
+Locking</a> document.  The second program, <i><tt class="var">semrm.c</tt></i> is
+used to destroy the semaphore (again, <b class="com">ipcrm</b> could be used to
+accomplish this.)</p>
+
+<p>The idea is to run run <i><tt class="var">semdemo.c</tt></i> in a few windows and
+see how all the processes interact.  When you're done, use
+<i><tt class="var">semrm.c</tt></i> to remove the semaphore.  You could also try
+removing the semaphore while running <i><tt class="var">semdemo.c</tt></i> just to see
+what kinds of errors are generated.</p>
+
+<p>Here's <a href="http://beej.us/guide/bgipc/examples/semdemo.c"><i><tt class="var">semdemo.c</tt></i></a>, including a
+function named <b><tt class="func">initsem()</tt></b> that gets around the semaphore
+race conditions, Stevens-style:</p>
+
+<pre class="code">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/ipc.h&gt;
+#include &lt;sys/sem.h&gt;
+
+#define MAX_RETRIES 10
+
+union semun {
+    int val;
+    struct semid_ds *buf;
+    ushort *array;
+};
+
+/*
+** initsem() -- more-than-inspired by W. Richard Stevens' UNIX Network
+** Programming 2nd edition, volume 2, lockvsem.c, page 295.
+*/
+int initsem(key_t key, int nsems)  /* key from ftok() */
+{
+    int i;
+    union semun arg;
+    struct semid_ds buf;
+    struct sembuf sb;
+    int semid;
+
+    semid = semget(key, nsems, IPC_CREAT | IPC_EXCL | 0666);
+
+    if (semid &gt;= 0) { /* we got it first */
+        sb.sem_op = 1; sb.sem_flg = 0;
+        arg.val = 1;
+
+        printf("press return\n"); getchar();
+
+        for(sb.sem_num = 0; sb.sem_num &lt; nsems; sb.sem_num++) { 
+            /* do a semop() to "free" the semaphores. */
+            /* this sets the sem_otime field, as needed below. */
+            if (semop(semid, &amp;sb, 1) == -1) {
+                int e = errno;
+                semctl(semid, 0, IPC_RMID); /* clean up */
+                errno = e;
+                return -1; /* error, check errno */
+            }
+        }
+
+    } else if (errno == EEXIST) { /* someone else got it first */
+        int ready = 0;
+
+        semid = semget(key, nsems, 0); /* get the id */
+        if (semid &lt; 0) return semid; /* error, check errno */
+
+        /* wait for other process to initialize the semaphore: */
+        arg.buf = &amp;buf;
+        for(i = 0; i &lt; MAX_RETRIES &amp;&amp; !ready; i++) {
+            semctl(semid, nsems-1, IPC_STAT, arg);
+            if (arg.buf-&gt;sem_otime != 0) {
+                ready = 1;
+            } else {
+                sleep(1);
+            }
+        }
+        if (!ready) {
+            errno = ETIME;
+            return -1;
+        }
+    } else {
+        return semid; /* error, check errno */
+    }
+
+    return semid;
+}
+
+int main(void)
+{
+    key_t key;
+    int semid;
+    struct sembuf sb;
+    
+    sb.sem_num = 0;
+    sb.sem_op = -1;  /* set to allocate resource */
+    sb.sem_flg = SEM_UNDO;
+
+    if ((key = ftok("semdemo.c", 'J')) == -1) {
+        perror("ftok");
+        exit(1);
+    }
+
+    /* grab the semaphore set created by seminit.c: */
+    if ((semid = initsem(key, 1)) == -1) {
+        perror("initsem");
+        exit(1);
+    }
+
+    printf("Press return to lock: ");
+    getchar();
+    printf("Trying to lock...\n");
+
+    if (semop(semid, &amp;sb, 1) == -1) {
+        perror("semop");
+        exit(1);
+    }
+
+    printf("Locked.\n");
+    printf("Press return to unlock: ");
+    getchar();
+
+    sb.sem_op = 1; /* free resource */
+    if (semop(semid, &amp;sb, 1) == -1) {
+        perror("semop");
+        exit(1);
+    }
+
+    printf("Unlocked\n");
+
+    return 0;
+}</pre>
+
+
+<p>Here's <a href="http://beej.us/guide/bgipc/examples/semrm.c"><i><tt class="var">semrm.c</tt></i></a>
+for removing the semaphore when you're done:</p>
+
+<pre class="code">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/ipc.h&gt;
+#include &lt;sys/sem.h&gt;
+
+int main(void)
+{
+    key_t key;
+    int semid;
+    union semun arg;
+
+    if ((key = ftok("semdemo.c", 'J')) == -1) {
+        perror("ftok");
+        exit(1);
+    }
+
+    /* grab the semaphore set created by seminit.c: */
+    if ((semid = semget(key, 1, 0)) == -1) {
+        perror("semget");
+        exit(1);
+    }
+
+    /* remove it: */
+    if (semctl(semid, 0, IPC_RMID, arg) == -1) {
+        perror("semctl");
+        exit(1);
+    }
+
+    return 0;
+}</pre>
+
+
+<p>Isn't that fun!  I'm sure you'll give up Quake just to play with this
+semaphore stuff all day long!</p>
+
+
+
+
+
+
+
+
+
+<h3 class="sect2title">8.6. <a name="semsum">Summary</a></h3>
+
+
+<p>I might have understated the usefulness of semaphores.  I assure you,
+they're very very very useful in a concurrency situation.  They're often
+faster than regular file locks, too.  Also, you can use them on other
+things that aren't files, such as <a href="shm.html">Shared Memory
+Segments</a>!  In fact, it is sometimes hard to live without them,
+quite frankly.</p>
+
+<p>Whenever you have multiple processes running through a critical
+section of code, man, you need semaphores.  You have zillions of
+them—you might as well use 'em.</p>
+
+
+
+<table width="100%" border="0" cellspacing="0"cellpadding="0" class="navtable">
+<tr>
+<td align="left"><a href="mq.html">&lt;&lt;&nbsp;Prev</a></td>
+<td align="center"><a href="index.html">Beej's Guide to Unix IPC</a></td><td align="right"><a href="shm.html">Next&nbsp;&gt;&gt;</a></td>
+</tr></table>
+
+</body>
+</html>

@@ -1,0 +1,531 @@
+E # 0 t 0 m 1 ce -1 msg -1
+SB v 1280 rid General-0-20170328-00:37:51-5892 b 1000
+KF p -1 c "" s ""
+MC id 1 c omnetpp::cModule t lab6.ForwordingNetwork n ForwordingNetwork cm 1
+MS id 1 d bgb=378,243
+MC id 2 c Node t lab6.Node pid 1 n A
+MS id 2 d p=60,51
+GC m 2 g 1048576 n g$i i 0 o 0
+GC m 2 g 1572864 n g$o i 0 o 1
+GC m 2 g 1048577 n g$i i 1 o 0
+GC m 2 g 1572865 n g$o i 1 o 1
+GC m 2 g 1048578 n g$i i 2 o 0
+GC m 2 g 1572866 n g$o i 2 o 1
+GC m 2 g 1048579 n g$i i 3 o 0
+GC m 2 g 1572867 n g$o i 3 o 1
+GC m 2 g 1048580 n g$i i 4 o 0
+GC m 2 g 1572868 n g$o i 4 o 1
+MC id 3 c Node t lab6.Node pid 1 n B
+MS id 3 d p=324,51
+GC m 3 g 1048576 n g$i i 0 o 0
+GC m 3 g 1572864 n g$o i 0 o 1
+GC m 3 g 1048577 n g$i i 1 o 0
+GC m 3 g 1572865 n g$o i 1 o 1
+GC m 3 g 1048578 n g$i i 2 o 0
+GC m 3 g 1572866 n g$o i 2 o 1
+GC m 3 g 1048579 n g$i i 3 o 0
+GC m 3 g 1572867 n g$o i 3 o 1
+GC m 3 g 1048580 n g$i i 4 o 0
+GC m 3 g 1572868 n g$o i 4 o 1
+MC id 4 c Node t lab6.Node pid 1 n C
+MS id 4 d p=169,130
+GC m 4 g 1048576 n g$i i 0 o 0
+GC m 4 g 1572864 n g$o i 0 o 1
+GC m 4 g 1048577 n g$i i 1 o 0
+GC m 4 g 1572865 n g$o i 1 o 1
+GC m 4 g 1048578 n g$i i 2 o 0
+GC m 4 g 1572866 n g$o i 2 o 1
+GC m 4 g 1048579 n g$i i 3 o 0
+GC m 4 g 1572867 n g$o i 3 o 1
+GC m 4 g 1048580 n g$i i 4 o 0
+GC m 4 g 1572868 n g$o i 4 o 1
+MC id 5 c Node t lab6.Node pid 1 n D
+MS id 5 d p=60,188
+GC m 5 g 1048576 n g$i i 0 o 0
+GC m 5 g 1572864 n g$o i 0 o 1
+GC m 5 g 1048577 n g$i i 1 o 0
+GC m 5 g 1572865 n g$o i 1 o 1
+GC m 5 g 1048578 n g$i i 2 o 0
+GC m 5 g 1572866 n g$o i 2 o 1
+GC m 5 g 1048579 n g$i i 3 o 0
+GC m 5 g 1572867 n g$o i 3 o 1
+GC m 5 g 1048580 n g$i i 4 o 0
+GC m 5 g 1572868 n g$o i 4 o 1
+MC id 6 c Node t lab6.Node pid 1 n E
+MS id 6 d p=324,188
+GC m 6 g 1048576 n g$i i 0 o 0
+GC m 6 g 1572864 n g$o i 0 o 1
+GC m 6 g 1048577 n g$i i 1 o 0
+GC m 6 g 1572865 n g$o i 1 o 1
+GC m 6 g 1048578 n g$i i 2 o 0
+GC m 6 g 1572866 n g$o i 2 o 1
+GC m 6 g 1048579 n g$i i 3 o 0
+GC m 6 g 1572867 n g$o i 3 o 1
+GC m 6 g 1048580 n g$i i 4 o 0
+GC m 6 g 1572868 n g$o i 4 o 1
+CC sm 2 sg 1572865 dm 3 dg 1048576
+CS sm 2 sg 1572865 d ""
+CC sm 3 sg 1572864 dm 2 dg 1048577
+CS sm 3 sg 1572864 d ""
+CC sm 2 sg 1572866 dm 4 dg 1048576
+CS sm 2 sg 1572866 d ""
+CC sm 4 sg 1572864 dm 2 dg 1048578
+CS sm 4 sg 1572864 d ""
+CC sm 2 sg 1572867 dm 5 dg 1048576
+CS sm 2 sg 1572867 d ""
+CC sm 5 sg 1572864 dm 2 dg 1048579
+CS sm 5 sg 1572864 d ""
+CC sm 3 sg 1572866 dm 4 dg 1048577
+CS sm 3 sg 1572866 d ""
+CC sm 4 sg 1572865 dm 3 dg 1048578
+CS sm 4 sg 1572865 d ""
+CC sm 3 sg 1572868 dm 6 dg 1048577
+CS sm 3 sg 1572868 d ""
+CC sm 6 sg 1572865 dm 3 dg 1048580
+CS sm 6 sg 1572865 d ""
+CC sm 4 sg 1572868 dm 6 dg 1048578
+CS sm 4 sg 1572868 d ""
+CC sm 6 sg 1572866 dm 4 dg 1048580
+CS sm 6 sg 1572866 d ""
+MB sm 1 tm 2 m initialize(0)
+CM id 100 tid 100 eid 100 etid 100 c omnetpp::cMessage n start pe -1
+BS id 100 tid 100 eid 100 etid 100 c omnetpp::cMessage n start pe 0
+ES t 0
+ME
+MB sm 1 tm 3 m initialize(0)
+CM id 101 tid 101 eid 101 etid 101 c omnetpp::cMessage n start pe -1
+BS id 101 tid 101 eid 101 etid 101 c omnetpp::cMessage n start pe 0
+ES t 0
+ME
+MB sm 1 tm 4 m initialize(0)
+CM id 102 tid 102 eid 102 etid 102 c omnetpp::cMessage n start pe -1
+BS id 102 tid 102 eid 102 etid 102 c omnetpp::cMessage n start pe 0
+ES t 0
+ME
+MB sm 1 tm 5 m initialize(0)
+CM id 103 tid 103 eid 103 etid 103 c omnetpp::cMessage n start pe -1
+BS id 103 tid 103 eid 103 etid 103 c omnetpp::cMessage n start pe 0
+ES t 0
+ME
+MB sm 1 tm 6 m initialize(0)
+CM id 104 tid 104 eid 104 etid 104 c omnetpp::cMessage n start pe -1
+BS id 104 tid 104 eid 104 etid 104 c omnetpp::cMessage n start pe 0
+ES t 0
+ME
+
+E # 1 t 0 m 2 ce 0 msg 100
+CM id 105 tid 105 eid 105 etid 105 c omnetpp::cMessage n "" pe -1
+CL id 105 tid 105 eid 105 etid 105 c R_PDU n "" pe 1 cid 106
+BS id 106 tid 105 eid 106 etid 105 c R_PDU n "" pe 1
+CL id 106 tid 105 eid 106 etid 105 c R_PDU n "" pe 1 cid 107
+SH sm 2 sg 1572865 pd 0.003
+ES t 0.003
+CL id 105 tid 105 eid 105 etid 105 c R_PDU n "" pe 1 cid 108
+BS id 108 tid 105 eid 108 etid 105 c R_PDU n "" pe 1
+CL id 108 tid 105 eid 108 etid 105 c R_PDU n "" pe 1 cid 109
+SH sm 2 sg 1572866 pd 0.002
+ES t 0.002
+CL id 105 tid 105 eid 105 etid 105 c R_PDU n "" pe 1 cid 110
+BS id 110 tid 105 eid 110 etid 105 c R_PDU n "" pe 1
+CL id 110 tid 105 eid 110 etid 105 c R_PDU n "" pe 1 cid 111
+SH sm 2 sg 1572867 pd 0.003
+ES t 0.003
+
+E # 2 t 0 m 3 ce 0 msg 101
+CM id 112 tid 112 eid 112 etid 112 c omnetpp::cMessage n "" pe -1
+CL id 112 tid 112 eid 112 etid 112 c R_PDU n "" pe 2 cid 113
+BS id 113 tid 112 eid 113 etid 112 c R_PDU n "" pe 2
+CL id 113 tid 112 eid 113 etid 112 c R_PDU n "" pe 2 cid 114
+SH sm 3 sg 1572864 pd 0.003
+ES t 0.003
+CL id 112 tid 112 eid 112 etid 112 c R_PDU n "" pe 2 cid 115
+BS id 115 tid 112 eid 115 etid 112 c R_PDU n "" pe 2
+CL id 115 tid 112 eid 115 etid 112 c R_PDU n "" pe 2 cid 116
+SH sm 3 sg 1572866 pd 0.004
+ES t 0.004
+CL id 112 tid 112 eid 112 etid 112 c R_PDU n "" pe 2 cid 117
+BS id 117 tid 112 eid 117 etid 112 c R_PDU n "" pe 2
+CL id 117 tid 112 eid 117 etid 112 c R_PDU n "" pe 2 cid 118
+SH sm 3 sg 1572868 pd 0.003
+ES t 0.003
+
+E # 3 t 0 m 4 ce 0 msg 102
+CM id 119 tid 119 eid 119 etid 119 c omnetpp::cMessage n "" pe -1
+CL id 119 tid 119 eid 119 etid 119 c R_PDU n "" pe 3 cid 120
+BS id 120 tid 119 eid 120 etid 119 c R_PDU n "" pe 3
+CL id 120 tid 119 eid 120 etid 119 c R_PDU n "" pe 3 cid 121
+SH sm 4 sg 1572864 pd 0.002
+ES t 0.002
+CL id 119 tid 119 eid 119 etid 119 c R_PDU n "" pe 3 cid 122
+BS id 122 tid 119 eid 122 etid 119 c R_PDU n "" pe 3
+CL id 122 tid 119 eid 122 etid 119 c R_PDU n "" pe 3 cid 123
+SH sm 4 sg 1572865 pd 0.004
+ES t 0.004
+CL id 119 tid 119 eid 119 etid 119 c R_PDU n "" pe 3 cid 124
+BS id 124 tid 119 eid 124 etid 119 c R_PDU n "" pe 3
+CL id 124 tid 119 eid 124 etid 119 c R_PDU n "" pe 3 cid 125
+SH sm 4 sg 1572868 pd 0.004
+ES t 0.004
+
+E # 4 t 0 m 5 ce 0 msg 103
+CM id 126 tid 126 eid 126 etid 126 c omnetpp::cMessage n "" pe -1
+CL id 126 tid 126 eid 126 etid 126 c R_PDU n "" pe 4 cid 127
+BS id 127 tid 126 eid 127 etid 126 c R_PDU n "" pe 4
+CL id 127 tid 126 eid 127 etid 126 c R_PDU n "" pe 4 cid 128
+SH sm 5 sg 1572864 pd 0.003
+ES t 0.003
+
+E # 5 t 0 m 6 ce 0 msg 104
+CM id 129 tid 129 eid 129 etid 129 c omnetpp::cMessage n "" pe -1
+CL id 129 tid 129 eid 129 etid 129 c R_PDU n "" pe 5 cid 130
+BS id 130 tid 129 eid 130 etid 129 c R_PDU n "" pe 5
+CL id 130 tid 129 eid 130 etid 129 c R_PDU n "" pe 5 cid 131
+SH sm 6 sg 1572865 pd 0.003
+ES t 0.003
+CL id 129 tid 129 eid 129 etid 129 c R_PDU n "" pe 5 cid 132
+BS id 132 tid 129 eid 132 etid 129 c R_PDU n "" pe 5
+CL id 132 tid 129 eid 132 etid 129 c R_PDU n "" pe 5 cid 133
+SH sm 6 sg 1572866 pd 0.004
+ES t 0.004
+
+E # 6 t 0.002 m 4 ce 1 msg 108
+BU id 4 txt "entering node:A"
+BS id 102 tid 102 eid 102 etid 102 c omnetpp::cMessage n start pe 3
+ES t 0.002
+
+E # 7 t 0.002 m 2 ce 3 msg 120
+BU id 2 txt "entering node:C"
+BS id 100 tid 100 eid 100 etid 100 c omnetpp::cMessage n start pe 1
+ES t 0.002
+
+E # 8 t 0.002 m 4 ce 6 msg 102
+CM id 134 tid 134 eid 134 etid 134 c omnetpp::cMessage n "" pe -1
+CL id 134 tid 134 eid 134 etid 134 c R_PDU n "" pe 8 cid 135
+BS id 135 tid 134 eid 135 etid 134 c R_PDU n "" pe 8
+CL id 135 tid 134 eid 135 etid 134 c R_PDU n "" pe 8 cid 136
+SH sm 4 sg 1572864 pd 0.002
+ES t 0.004
+CL id 134 tid 134 eid 134 etid 134 c R_PDU n "" pe 8 cid 137
+BS id 137 tid 134 eid 137 etid 134 c R_PDU n "" pe 8
+CL id 137 tid 134 eid 137 etid 134 c R_PDU n "" pe 8 cid 138
+SH sm 4 sg 1572865 pd 0.004
+ES t 0.006
+CL id 134 tid 134 eid 134 etid 134 c R_PDU n "" pe 8 cid 139
+BS id 139 tid 134 eid 139 etid 134 c R_PDU n "" pe 8
+CL id 139 tid 134 eid 139 etid 134 c R_PDU n "" pe 8 cid 140
+SH sm 4 sg 1572864 pd 0.002
+ES t 0.004
+CL id 134 tid 134 eid 134 etid 134 c R_PDU n "" pe 8 cid 141
+BS id 141 tid 134 eid 141 etid 134 c R_PDU n "" pe 8
+CL id 141 tid 134 eid 141 etid 134 c R_PDU n "" pe 8 cid 142
+SH sm 4 sg 1572868 pd 0.004
+ES t 0.006
+
+E # 9 t 0.002 m 2 ce 7 msg 100
+CM id 143 tid 143 eid 143 etid 143 c omnetpp::cMessage n "" pe -1
+CL id 143 tid 143 eid 143 etid 143 c R_PDU n "" pe 9 cid 144
+BS id 144 tid 143 eid 144 etid 143 c R_PDU n "" pe 9
+CL id 144 tid 143 eid 144 etid 143 c R_PDU n "" pe 9 cid 145
+SH sm 2 sg 1572865 pd 0.003
+ES t 0.005
+CL id 143 tid 143 eid 143 etid 143 c R_PDU n "" pe 9 cid 146
+BS id 146 tid 143 eid 146 etid 143 c R_PDU n "" pe 9
+CL id 146 tid 143 eid 146 etid 143 c R_PDU n "" pe 9 cid 147
+SH sm 2 sg 1572866 pd 0.002
+ES t 0.004
+CL id 143 tid 143 eid 143 etid 143 c R_PDU n "" pe 9 cid 148
+BS id 148 tid 143 eid 148 etid 143 c R_PDU n "" pe 9
+CL id 148 tid 143 eid 148 etid 143 c R_PDU n "" pe 9 cid 149
+SH sm 2 sg 1572867 pd 0.003
+ES t 0.005
+CL id 143 tid 143 eid 143 etid 143 c R_PDU n "" pe 9 cid 150
+BS id 150 tid 143 eid 150 etid 143 c R_PDU n "" pe 9
+CL id 150 tid 143 eid 150 etid 143 c R_PDU n "" pe 9 cid 151
+SH sm 2 sg 1572866 pd 0.002
+ES t 0.004
+
+E # 10 t 0.003 m 3 ce 1 msg 106
+BU id 3 txt "entering node:A"
+BS id 101 tid 101 eid 101 etid 101 c omnetpp::cMessage n start pe 2
+ES t 0.003
+
+E # 11 t 0.003 m 5 ce 1 msg 110
+BU id 5 txt "entering node:A"
+BS id 103 tid 103 eid 103 etid 103 c omnetpp::cMessage n start pe 4
+ES t 0.003
+
+E # 12 t 0.003 m 2 ce 2 msg 113
+BU id 2 txt "entering node:B"
+DM id 113 tid 112 eid 113 etid 112 c omnetpp::cMessage n "" pe 12
+
+E # 13 t 0.003 m 6 ce 2 msg 117
+BU id 6 txt "entering node:B"
+BS id 104 tid 104 eid 104 etid 104 c omnetpp::cMessage n start pe 5
+ES t 0.003
+
+E # 14 t 0.003 m 2 ce 4 msg 127
+BU id 2 txt "entering node:D"
+DM id 127 tid 126 eid 127 etid 126 c omnetpp::cMessage n "" pe 14
+
+E # 15 t 0.003 m 3 ce 5 msg 130
+BU id 3 txt "entering node:E"
+DM id 130 tid 129 eid 130 etid 129 c omnetpp::cMessage n "" pe 15
+
+E # 16 t 0.003 m 3 ce 10 msg 101
+CM id 152 tid 152 eid 152 etid 152 c omnetpp::cMessage n "" pe -1
+CL id 152 tid 152 eid 152 etid 152 c R_PDU n "" pe 16 cid 153
+BS id 153 tid 152 eid 153 etid 152 c R_PDU n "" pe 16
+CL id 153 tid 152 eid 153 etid 152 c R_PDU n "" pe 16 cid 154
+SH sm 3 sg 1572864 pd 0.003
+ES t 0.006
+CL id 152 tid 152 eid 152 etid 152 c R_PDU n "" pe 16 cid 155
+BS id 155 tid 152 eid 155 etid 152 c R_PDU n "" pe 16
+CL id 155 tid 152 eid 155 etid 152 c R_PDU n "" pe 16 cid 156
+SH sm 3 sg 1572866 pd 0.004
+ES t 0.007
+CL id 152 tid 152 eid 152 etid 152 c R_PDU n "" pe 16 cid 157
+BS id 157 tid 152 eid 157 etid 152 c R_PDU n "" pe 16
+CL id 157 tid 152 eid 157 etid 152 c R_PDU n "" pe 16 cid 158
+SH sm 3 sg 1572864 pd 0.003
+ES t 0.006
+CL id 152 tid 152 eid 152 etid 152 c R_PDU n "" pe 16 cid 159
+BS id 159 tid 152 eid 159 etid 152 c R_PDU n "" pe 16
+CL id 159 tid 152 eid 159 etid 152 c R_PDU n "" pe 16 cid 160
+SH sm 3 sg 1572868 pd 0.003
+ES t 0.006
+
+E # 17 t 0.003 m 5 ce 11 msg 103
+CM id 161 tid 161 eid 161 etid 161 c omnetpp::cMessage n "" pe -1
+CL id 161 tid 161 eid 161 etid 161 c R_PDU n "" pe 17 cid 162
+BS id 162 tid 161 eid 162 etid 161 c R_PDU n "" pe 17
+CL id 162 tid 161 eid 162 etid 161 c R_PDU n "" pe 17 cid 163
+SH sm 5 sg 1572864 pd 0.003
+ES t 0.006
+CL id 161 tid 161 eid 161 etid 161 c R_PDU n "" pe 17 cid 164
+BS id 164 tid 161 eid 164 etid 161 c R_PDU n "" pe 17
+CL id 164 tid 161 eid 164 etid 161 c R_PDU n "" pe 17 cid 165
+SH sm 5 sg 1572864 pd 0.003
+ES t 0.006
+CL id 161 tid 161 eid 161 etid 161 c R_PDU n "" pe 17 cid 166
+BS id 166 tid 161 eid 166 etid 161 c R_PDU n "" pe 17
+CL id 166 tid 161 eid 166 etid 161 c R_PDU n "" pe 17 cid 167
+SH sm 5 sg 1572864 pd 0.003
+ES t 0.006
+
+E # 18 t 0.003 m 6 ce 13 msg 104
+CM id 168 tid 168 eid 168 etid 168 c omnetpp::cMessage n "" pe -1
+CL id 168 tid 168 eid 168 etid 168 c R_PDU n "" pe 18 cid 169
+BS id 169 tid 168 eid 169 etid 168 c R_PDU n "" pe 18
+CL id 169 tid 168 eid 169 etid 168 c R_PDU n "" pe 18 cid 170
+SH sm 6 sg 1572865 pd 0.003
+ES t 0.006
+CL id 168 tid 168 eid 168 etid 168 c R_PDU n "" pe 18 cid 171
+BS id 171 tid 168 eid 171 etid 168 c R_PDU n "" pe 18
+CL id 171 tid 168 eid 171 etid 168 c R_PDU n "" pe 18 cid 172
+SH sm 6 sg 1572865 pd 0.003
+ES t 0.006
+CL id 168 tid 168 eid 168 etid 168 c R_PDU n "" pe 18 cid 173
+BS id 173 tid 168 eid 173 etid 168 c R_PDU n "" pe 18
+CL id 173 tid 168 eid 173 etid 168 c R_PDU n "" pe 18 cid 174
+SH sm 6 sg 1572866 pd 0.004
+ES t 0.007
+
+E # 19 t 0.004 m 4 ce 2 msg 115
+BU id 4 txt "entering node:B"
+DM id 115 tid 112 eid 115 etid 112 c omnetpp::cMessage n "" pe 19
+
+E # 20 t 0.004 m 3 ce 3 msg 122
+BU id 3 txt "entering node:C"
+DM id 122 tid 119 eid 122 etid 119 c omnetpp::cMessage n "" pe 20
+
+E # 21 t 0.004 m 6 ce 3 msg 124
+BU id 6 txt "entering node:C"
+BS id 104 tid 104 eid 104 etid 104 c omnetpp::cMessage n start pe 18
+ES t 0.004
+
+E # 22 t 0.004 m 4 ce 5 msg 132
+BU id 4 txt "entering node:E"
+DM id 132 tid 129 eid 132 etid 129 c omnetpp::cMessage n "" pe 22
+
+E # 23 t 0.004 m 2 ce 8 msg 135
+BU id 2 txt "entering node:C"
+DM id 135 tid 134 eid 135 etid 134 c omnetpp::cMessage n "" pe 23
+
+E # 24 t 0.004 m 2 ce 8 msg 139
+BU id 2 txt "entering node:C"
+DM id 139 tid 134 eid 139 etid 134 c omnetpp::cMessage n "" pe 24
+
+E # 25 t 0.004 m 4 ce 9 msg 146
+BU id 4 txt "entering node:A"
+DM id 146 tid 143 eid 146 etid 143 c omnetpp::cMessage n "" pe 25
+
+E # 26 t 0.004 m 4 ce 9 msg 150
+BU id 4 txt "entering node:A"
+DM id 150 tid 143 eid 150 etid 143 c omnetpp::cMessage n "" pe 26
+
+E # 27 t 0.004 m 6 ce 21 msg 104
+CM id 175 tid 175 eid 175 etid 175 c omnetpp::cMessage n "" pe -1
+CL id 175 tid 175 eid 175 etid 175 c R_PDU n "" pe 27 cid 176
+BS id 176 tid 175 eid 176 etid 175 c R_PDU n "" pe 27
+CL id 176 tid 175 eid 176 etid 175 c R_PDU n "" pe 27 cid 177
+SH sm 6 sg 1572866 pd 0.004
+ES t 0.008
+CL id 175 tid 175 eid 175 etid 175 c R_PDU n "" pe 27 cid 178
+BS id 178 tid 175 eid 178 etid 175 c R_PDU n "" pe 27
+CL id 178 tid 175 eid 178 etid 175 c R_PDU n "" pe 27 cid 179
+SH sm 6 sg 1572865 pd 0.003
+ES t 0.007
+CL id 175 tid 175 eid 175 etid 175 c R_PDU n "" pe 27 cid 180
+BS id 180 tid 175 eid 180 etid 175 c R_PDU n "" pe 27
+CL id 180 tid 175 eid 180 etid 175 c R_PDU n "" pe 27 cid 181
+SH sm 6 sg 1572866 pd 0.004
+ES t 0.008
+
+E # 28 t 0.005 m 3 ce 9 msg 144
+BU id 3 txt "entering node:A"
+DM id 144 tid 143 eid 144 etid 143 c omnetpp::cMessage n "" pe 28
+
+E # 29 t 0.005 m 5 ce 9 msg 148
+BU id 5 txt "entering node:A"
+BS id 103 tid 103 eid 103 etid 103 c omnetpp::cMessage n start pe 17
+ES t 0.005
+
+E # 30 t 0.005 m 5 ce 29 msg 103
+CM id 182 tid 182 eid 182 etid 182 c omnetpp::cMessage n "" pe -1
+CL id 182 tid 182 eid 182 etid 182 c R_PDU n "" pe 30 cid 183
+BS id 183 tid 182 eid 183 etid 182 c R_PDU n "" pe 30
+CL id 183 tid 182 eid 183 etid 182 c R_PDU n "" pe 30 cid 184
+SH sm 5 sg 1572864 pd 0.003
+ES t 0.008
+CL id 182 tid 182 eid 182 etid 182 c R_PDU n "" pe 30 cid 185
+BS id 185 tid 182 eid 185 etid 182 c R_PDU n "" pe 30
+CL id 185 tid 182 eid 185 etid 182 c R_PDU n "" pe 30 cid 186
+SH sm 5 sg 1572864 pd 0.003
+ES t 0.008
+CL id 182 tid 182 eid 182 etid 182 c R_PDU n "" pe 30 cid 187
+BS id 187 tid 182 eid 187 etid 182 c R_PDU n "" pe 30
+CL id 187 tid 182 eid 187 etid 182 c R_PDU n "" pe 30 cid 188
+SH sm 5 sg 1572864 pd 0.003
+ES t 0.008
+CL id 182 tid 182 eid 182 etid 182 c R_PDU n "" pe 30 cid 189
+BS id 189 tid 182 eid 189 etid 182 c R_PDU n "" pe 30
+CL id 189 tid 182 eid 189 etid 182 c R_PDU n "" pe 30 cid 190
+SH sm 5 sg 1572864 pd 0.003
+ES t 0.008
+
+E # 31 t 0.006 m 3 ce 8 msg 137
+BU id 3 txt "entering node:C"
+DM id 137 tid 134 eid 137 etid 134 c omnetpp::cMessage n "" pe 31
+
+E # 32 t 0.006 m 6 ce 8 msg 141
+BU id 6 txt "entering node:C"
+BS id 104 tid 104 eid 104 etid 104 c omnetpp::cMessage n start pe 27
+ES t 0.006
+
+E # 33 t 0.006 m 2 ce 16 msg 153
+BU id 2 txt "entering node:B"
+DM id 153 tid 152 eid 153 etid 152 c omnetpp::cMessage n "" pe 33
+
+E # 34 t 0.006 m 2 ce 16 msg 157
+BU id 2 txt "entering node:B"
+DM id 157 tid 152 eid 157 etid 152 c omnetpp::cMessage n "" pe 34
+
+E # 35 t 0.006 m 6 ce 16 msg 159
+BU id 6 txt "entering node:B"
+DM id 159 tid 152 eid 159 etid 152 c omnetpp::cMessage n "" pe 35
+
+E # 36 t 0.006 m 2 ce 17 msg 162
+BU id 2 txt "entering node:D"
+DM id 162 tid 161 eid 162 etid 161 c omnetpp::cMessage n "" pe 36
+
+E # 37 t 0.006 m 2 ce 17 msg 164
+BU id 2 txt "entering node:D"
+DM id 164 tid 161 eid 164 etid 161 c omnetpp::cMessage n "" pe 37
+
+E # 38 t 0.006 m 2 ce 17 msg 166
+BU id 2 txt "entering node:D"
+DM id 166 tid 161 eid 166 etid 161 c omnetpp::cMessage n "" pe 38
+
+E # 39 t 0.006 m 3 ce 18 msg 169
+BU id 3 txt "entering node:E"
+DM id 169 tid 168 eid 169 etid 168 c omnetpp::cMessage n "" pe 39
+
+E # 40 t 0.006 m 3 ce 18 msg 171
+BU id 3 txt "entering node:E"
+DM id 171 tid 168 eid 171 etid 168 c omnetpp::cMessage n "" pe 40
+
+E # 41 t 0.006 m 6 ce 32 msg 104
+CM id 191 tid 191 eid 191 etid 191 c omnetpp::cMessage n "" pe -1
+CL id 191 tid 191 eid 191 etid 191 c R_PDU n "" pe 41 cid 192
+BS id 192 tid 191 eid 192 etid 191 c R_PDU n "" pe 41
+CL id 192 tid 191 eid 192 etid 191 c R_PDU n "" pe 41 cid 193
+SH sm 6 sg 1572866 pd 0.004
+ES t 0.01
+CL id 191 tid 191 eid 191 etid 191 c R_PDU n "" pe 41 cid 194
+BS id 194 tid 191 eid 194 etid 191 c R_PDU n "" pe 41
+CL id 194 tid 191 eid 194 etid 191 c R_PDU n "" pe 41 cid 195
+SH sm 6 sg 1572865 pd 0.003
+ES t 0.009
+CL id 191 tid 191 eid 191 etid 191 c R_PDU n "" pe 41 cid 196
+BS id 196 tid 191 eid 196 etid 191 c R_PDU n "" pe 41
+CL id 196 tid 191 eid 196 etid 191 c R_PDU n "" pe 41 cid 197
+SH sm 6 sg 1572866 pd 0.004
+ES t 0.01
+CL id 191 tid 191 eid 191 etid 191 c R_PDU n "" pe 41 cid 198
+BS id 198 tid 191 eid 198 etid 191 c R_PDU n "" pe 41
+CL id 198 tid 191 eid 198 etid 191 c R_PDU n "" pe 41 cid 199
+SH sm 6 sg 1572866 pd 0.004
+ES t 0.01
+
+E # 42 t 0.007 m 4 ce 16 msg 155
+BU id 4 txt "entering node:B"
+DM id 155 tid 152 eid 155 etid 152 c omnetpp::cMessage n "" pe 42
+
+E # 43 t 0.007 m 4 ce 18 msg 173
+BU id 4 txt "entering node:E"
+DM id 173 tid 168 eid 173 etid 168 c omnetpp::cMessage n "" pe 43
+
+E # 44 t 0.007 m 3 ce 27 msg 178
+BU id 3 txt "entering node:E"
+DM id 178 tid 175 eid 178 etid 175 c omnetpp::cMessage n "" pe 44
+
+E # 45 t 0.008 m 4 ce 27 msg 176
+BU id 4 txt "entering node:E"
+DM id 176 tid 175 eid 176 etid 175 c omnetpp::cMessage n "" pe 45
+
+E # 46 t 0.008 m 4 ce 27 msg 180
+BU id 4 txt "entering node:E"
+DM id 180 tid 175 eid 180 etid 175 c omnetpp::cMessage n "" pe 46
+
+E # 47 t 0.008 m 2 ce 30 msg 183
+BU id 2 txt "entering node:D"
+DM id 183 tid 182 eid 183 etid 182 c omnetpp::cMessage n "" pe 47
+
+E # 48 t 0.008 m 2 ce 30 msg 185
+BU id 2 txt "entering node:D"
+DM id 185 tid 182 eid 185 etid 182 c omnetpp::cMessage n "" pe 48
+
+E # 49 t 0.008 m 2 ce 30 msg 187
+BU id 2 txt "entering node:D"
+DM id 187 tid 182 eid 187 etid 182 c omnetpp::cMessage n "" pe 49
+
+E # 50 t 0.008 m 2 ce 30 msg 189
+BU id 2 txt "entering node:D"
+DM id 189 tid 182 eid 189 etid 182 c omnetpp::cMessage n "" pe 50
+
+E # 51 t 0.009 m 3 ce 41 msg 194
+BU id 3 txt "entering node:E"
+DM id 194 tid 191 eid 194 etid 191 c omnetpp::cMessage n "" pe 51
+
+E # 52 t 0.01 m 4 ce 41 msg 192
+BU id 4 txt "entering node:E"
+DM id 192 tid 191 eid 192 etid 191 c omnetpp::cMessage n "" pe 52
+
+E # 53 t 0.01 m 4 ce 41 msg 196
+BU id 4 txt "entering node:E"
+DM id 196 tid 191 eid 196 etid 191 c omnetpp::cMessage n "" pe 53
+
+E # 54 t 0.01 m 4 ce 41 msg 198
+BU id 4 txt "entering node:E"
+DM id 198 tid 191 eid 198 etid 191 c omnetpp::cMessage n "" pe 54
+SE e 0 c 13 m "No more events -- simulation ended at event #54, t=0.01."

@@ -1,0 +1,25 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"> <!-- Last Updates : Thu., April- 11, 2002 06:18:30 PM (IST) --><title>LSST v1.05 &gt; Chapter 7 &gt; Doing arithmetic with awk</title>
+
+<!--Google Top Ad BEGIN-->
+<script type="text/javascript"><!--
+google_ad_client = "pub-9961351994700795";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_color_border = "A8DDA0";
+google_color_bg = "EBFFED";
+google_color_link = "0000CC";
+google_color_url = "008000";
+google_color_text = "6F6F6F";
+//--></script>
+<script type="text/javascript" src="ch07sec03_files/show_ads.js">
+</script>
+
+<!--Google Top Ad END-->
+
+ </head><body><table align="center" border="0" cellpadding="0" cellspacing="0" width="99%"><tbody><tr><td colspan="3"> <div align="center"><b>Linux Shell Scripting Tutorial (LSST) v1.05r3</b></div></td></tr><tr><td height="3" width="8%"> <div align="left"><a href="http://www.freeos.com/guides/lsst/ch07sec02.html">Prev</a></div></td><td height="3" width="86%"> <div align="center"> Chapter 7: awk Revisited</div></td><td height="3" width="6%"> <div align="right"><a href="http://www.freeos.com/guides/lsst/ch07sec04.html">Next</a></div></td></tr><tr><td colspan="3"> <hr align="center"></td></tr></tbody></table><h1>Doing arithmetic with awk</h1><p>You can easily, do the arithmetic with awk as follows<br></p> <table bgcolor="#cccccc" border="0" cellpadding="1" cellspacing="1" width="100%"><tbody><tr><td><code>$ cat &gt; <b><a href="http://www.freeos.com/guides/lsst/datafiles/math">math </a></b><br> {<br> &nbsp;&nbsp;print $1 " + " $2 " = " $1 + $2<br> &nbsp;&nbsp;print $1 " - " $2 " = " $1 - $2<br> &nbsp;&nbsp;print $1 " / " $2 " = " $1 / $2<br> &nbsp;&nbsp;print $1 " x " $2 " = " $1 * $2<br> &nbsp;&nbsp;print $1 " mod " $2 " = " $1 % $2<br> }</code></td></tr> </tbody></table><p>Run the awk program as follows:</p><p><b>$ awk -f math </b><br> 20 3<br> 20 + 3 = 23<br> 20 - 3 = 17<br> 20 / 3 = 6.66667<br> 20 x 3 = 60<br> 20 mod 3 = 2<br> (Press CTRL + D to terminate)</p><p>In
+above program print $1 " + " $2 " = " $1 + $2, statement is used for
+addition purpose. Here $1 + $2, means add (+) first field with second
+field. Same way you can do - (subtraction ), * (Multiplication), /
+(Division), % (modular use to find remainder of division operation).</p><p></p> <table align="center" border="0" cellpadding="0" cellspacing="0" width="99%"><tbody><tr><td colspan="3" height="20"><hr></td></tr><tr><td width="42%"> <div align="left"><a href="http://www.freeos.com/guides/lsst/ch07sec02.html">Prev</a></div></td><td width="17%"><div align="center"><a href="http://www.freeos.com/guides/lsst/index.html">Home</a></div></td><td width="41%"> <div align="right"><a href="http://www.freeos.com/guides/lsst/ch07sec04.html">Next</a></div></td></tr><tr><td width="42%">Predefined variables of awk</td><td width="17%"> <div align="center"><a href="http://www.freeos.com/guides/lsst/ch07.html">Up</a></div></td><td width="41%"> <div align="right">User Defined variables in awk</div></td></tr></tbody></table></body></html>

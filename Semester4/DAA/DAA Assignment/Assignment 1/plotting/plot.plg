@@ -1,0 +1,21 @@
+#!/usr/bin/gnuplot 
+# The above line is required. Dont remove it unless you know what you are doing
+
+set term post eps font 'Helvatica,25'
+set ylabel 'Y-axis label'
+set xlabel 'X-axis label'
+#set logscale y   # As you can guess.. # begins a comment
+set autoscale y
+set style data linespoints 
+set output 'output.eps'           # The output file is produced as rtt.eps You should have appropriate application to open .eps files
+
+# Invest some time in understanding how is it plotting the curves. You will have to look at the files too. 
+plot  "file1" lt -1 pi -2 pt 7 title 'label 1' \
+,     "file2" lt -1 pi -2 pt 5 title 'label 2' \
+,     "file3" lt -1 pi -2 pt 2 title 'label 3' \
+,     "file4" lt -1 pi -2 pt 1 title 'label 4' \
+,     "file5" lt -1 pi -2 pt 3 title 'label 5' \
+
+
+
+# If you are interested in learning how to write gnuplot scripts and want your plots to look more fancy. Learnt it! It is a really easy, amazing and powerful tool to plot.
