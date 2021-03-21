@@ -1,0 +1,90 @@
+﻿Insert the following data into the employees table:
+
+| 499991 | 1962-02-26 | Pohua          | Sichman          | F      | 1989-01-12 |
+| 499992 | 1960-10-12 | Siamak         | Salverda         | F      | 1987-05-10 |
+| 499993 | 1963-06-04 | DeForest       | Mullainathan     | M      | 1997-04-07 |
+| 499994 | 1952-02-26 | Navin          | Argence          | F      | 1990-04-24 |
+| 499995 | 1958-09-24 | Dekang         | Lichtner         | F      | 1993-01-12 |
+| 499996 | 1953-03-07 | Zito           | Baaz             | M      | 1990-09-27 |
+| 499997 | 1961-08-03 | Berhard        | Lenart           | M      | 1986-04-21 |
+| 499998 | 1956-09-05 | Patricia       | Breugel          | M      | 1993-10-13 |
+| 499999 | 1958-05-01 | Sachin         | Tsukuda          | M      | 1997-11-30 |
+
+Departments Table:
+
+| d009    | Customer Service   |
+| d005    | Development        |
+| d002    | Finance            |
+| d003    | Human Resources    |
+| d001    | Marketing 	       |
+| d004    | Production         |
+
+dept_emp table:
+| 499991 | d009    | 1997-02-11 | 9999-01-01 |
+| 499992 | d001    | 1995-05-31 | 9999-01-01 |
+| 499992 | d003    | 1987-05-10 | 1995-05-31 |
+| 499993 | d004    | 1997-04-07 | 9999-01-01 |
+| 499994 | d004    | 1993-02-22 | 1993-10-27 |
+| 499995 | d004    | 1997-06-02 | 9999-01-01 |
+| 499996 | d004    | 1996-05-13 | 9999-01-01 |
+| 499997 | d005    | 1987-08-30 | 9999-01-01 |
+| 499998 | d003    | 1993-12-27 | 9999-01-01 |
+| 499999 | d004    | 1997-11-30 | 9999-01-01 |
+
+dept_manager:
+
+| 499991 | d009    | 1985-01-01 | 1991-10-01 |
+| 499993 | d002    | 1989-12-17 | 9999-01-01 |
+| 499992 | d003    | 1985-01-01 | 1992-03-21 |
+| 499993 | d004    | 1988-09-09 | 1992-08-02 |
+| 499997 | d005    | 1985-01-01 | 1992-04-25 |
+| 499999 | d004    | 1996-01-03 | 9999-01-01 |
+
+titles:
+
+| 499991 | Staff              | 1997-02-11 | 9999-01-01 |
+| 499992 | Senior Staff       | 1992-05-09 | 9999-01-01 |
+| 499992 | Staff              | 1987-05-10 | 1992-05-09 |
+| 499993 | Engineer           | 1997-04-07 | 9999-01-01 |
+| 499994 | Engineer           | 1993-02-22 | 1993-10-27 |
+| 499995 | Engineer           | 1997-06-02 | 9999-01-01 |
+| 499996 | Engineer           | 1996-05-13 | 2002-05-13 |
+| 499996 | Senior Engineer    | 2002-05-13 | 9999-01-01 |
+| 499997 | Engineer           | 1987-08-30 | 1992-08-29 |
+| 499997 | Senior Engineer    | 1992-08-29 | 9999-01-01 |
+| 499998 | Senior Staff       | 1998-12-27 | 9999-01-01 |
+| 499998 | Staff              | 1993-12-27 | 1998-12-27 |
+| 499999 | Engineer           | 1997-11-30 | 9999-01-01 |
+
+Salaries:
+
+| 499991 |  43612 | 1997-02-11 | 1998-02-11 |
+| 499991 |  45367 | 1998-02-11 | 1999-02-11 |
+| 499992 |  56516 | 1991-05-09 | 1992-05-08 |
+| 499992 |  59357 | 1992-05-08 | 1993-05-08 |
+| 499992 |  63601 | 1993-05-08 | 1994-05-08 |
+| 499993 |  43082 | 2001-04-06 | 2002-04-05 |
+| 499993 |  44305 | 2002-04-05 | 9999-01-01 |
+| 499994 |  40000 | 1993-02-22 | 1993-10-27 |
+| 499995 |  40000 | 1997-06-02 | 1998-06-02 |
+| 499996 |  64714 | 2000-05-12 | 2001-05-12 |
+| 499996 |  65900 | 2001-05-12 | 2002-05-12 |
+| 499996 |  69501 | 2002-05-12 | 9999-01-01 |
+| 499997 |  49597 | 1987-08-30 | 1988-08-29 |
+| 499997 |  50783 | 1988-08-29 | 1989-08-29 |
+| 499998 |  55003 | 2001-12-25 | 9999-01-01 |
+| 499999 |  63707 | 1997-11-30 | 1998-11-30 |
+
+
+1. List the names of all female employees.
+2. List all employees recruited before the year 1988.
+(Refer: https://dev.mysql.com/doc/refman/5.5/en/date-and-time-functions.html#function_date-format)
+3. List the department numbers which has employees.
+4. List the department manager numbers, the department number and the duration for which they were managing that department. 
+(Refer: https://dev.mysql.com/doc/refman/5.5/en/date-and-time-functions.html#function_date-add)
+5. List different designations in the company.
+6. List all employees with salary in the range of 40000 to 50000.
+7. Add Rs 2000 to the salary of all employees who are earning leass than Rs 45000.
+8. Delete all employees who were born before 1955.
+(Refer: https://dev.mysql.com/doc/refman/5.5/en/date-and-time-functions.html#function_date-format)
+
